@@ -4,10 +4,10 @@ import {
   signInWithEmailAndPassword,
   authState,
   createUserWithEmailAndPassword,
-
   UserCredential,
 } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -18,12 +18,28 @@ export class AuthService {
   constructor(private auth: Auth) {}
 
   signUp(email: string, password: string): Observable<UserCredential> {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+    return from(createUserWithEmailAndPassword(this.auth, email, password)).pipe(
+      catchError(this.handleError<UserCredential>('signUp'))
+    );
   }
-  login(email: string, password: string): Observable<any> {
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+
+  login(email: string, password: string): Observable<UserCredential> {
+    return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
+      catchError(this.handleError<UserCredential>('login'))
+    );
   }
-  logout(): Observable<any> {
-    return from(this.auth.signOut());
+
+  logout(): Observable<void> {
+    return from(this.auth.signOut()).pipe(
+      catchError(this.handleError<void>('logout'))
+    );
+  }
+
+  private handleError<T>(operation = 'operation') {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+      // Let the app keep running by returning an empty result.
+      return of(null as T);
+    };
   }
 }
