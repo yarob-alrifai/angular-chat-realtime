@@ -1,0 +1,21 @@
+<mat-toolbar color="" class="flex justify-between items-center shadow-lg">
+  <div class="flex items-center">
+    <span class="text-xl font-semibold">My App</span>
+    <button mat-button class="ml-2" routerLink="/main">Main</button>
+    <button mat-button class="ml-2" routerLink="/home">Home</button>
+  </div>
+  <div>
+    <ng-container *ngIf="user$ | async as user; else loginButtons">
+      <div class="flex">
+        <img [src]="photoURL" alt="Profile" class="w-10 h-10 rounded-full mr-2">
+        <button mat-button class="ml-2" (click)="logout()">Logout</button>
+      </div>
+    </ng-container>
+    <ng-template #loginButtons>
+      <button mat-button routerLink="/login" class="ml-2">Login</button>
+      <button mat-button routerLink="/sign-up" class="ml-2">Sign Up</button>
+    </ng-template>
+  </div>
+</mat-toolbar>
+
+<router-outlet></router-outlet>
