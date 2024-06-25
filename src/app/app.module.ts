@@ -22,20 +22,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MainComponent } from './components/main/main.component';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
-
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatListModule } from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
 
 
 const angularMaterial = [
-  MatToolbarModule,
+  MatToolbarModule,MatDividerModule,
+  MatListModule,
   MatIconModule,
   MatButtonModule,
   MatFormFieldModule,
   MatMenuModule,
   MatInputModule,
-  ReactiveFormsModule,MatAutocompleteModule
+  ReactiveFormsModule,
+  MatAutocompleteModule,
 ];
 
 @NgModule({
@@ -53,19 +54,18 @@ const angularMaterial = [
     provideAnimationsAsync(),
     provideFirebaseApp(() =>
       initializeApp({
-        apiKey: "AIzaSyAysH8mRYPJOh3aqldldRQFHjMnJWX8kO4",
-        authDomain: "test-f8881.firebaseapp.com",
-        projectId: "test-f8881",
-        storageBucket: "test-f8881.appspot.com",
-        messagingSenderId: "344193245290",
-        appId: "1:344193245290:web:816bd78fb0f38f894fea13",
-        measurementId: "G-8T2TBZVNMM"
+        apiKey: 'AIzaSyAysH8mRYPJOh3aqldldRQFHjMnJWX8kO4',
+        authDomain: 'test-f8881.firebaseapp.com',
+        projectId: 'test-f8881',
+        storageBucket: 'test-f8881.appspot.com',
+        messagingSenderId: '344193245290',
+        appId: '1:344193245290:web:816bd78fb0f38f894fea13',
+        measurementId: 'G-8T2TBZVNMM',
       })
     ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
-
   ],
   bootstrap: [AppComponent],
 })

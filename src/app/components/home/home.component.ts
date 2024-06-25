@@ -18,10 +18,9 @@ export class HomeComponent {
     private userService: UserService,
     private chatsService: ChatsService
   ) {}
-  ngOnInit(): void {}
-  createChat(otherUser: ProfileUser){
-    this.chatsService.createChat(otherUser).subscribe()
-  }
+
+  // fire observe
+  myChats$ = this.chatsService.myChats$
   // green get user data from the user services
   user$: Observable<ProfileUser | null> = this.userService.currentUserProfile$;
   users$ = combineLatest([
@@ -35,4 +34,11 @@ export class HomeComponent {
       )
     )
   );
+
+   // green create chat function
+   createChat(otherUser: ProfileUser){
+    this.chatsService.createChat(otherUser).subscribe()
+  }
+
+
 }

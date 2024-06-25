@@ -1,11 +1,15 @@
 <div class="px-36  flex  screen">
 
-  <div class="chats-list rounded-md bg-slate-300 m-7  shadow-lg">
+  <div class="chats-list rounded-md bg-slate-50  m-7  shadow-lg">
 
+
+    <!-- fire search field -->
     <div class="m-2">
-      <mat-form-field class="w-full ">
-        <input matInput placeholder="Search for Users . . ." type="text" [formControl]="searchControl"
+      <mat-form-field  >
+        <mat-label>Search for Users </mat-label>
+        <input matInput placeholder="yarob" type="text" [formControl]="searchControl"
           [matAutocomplete]="auto">
+          <mat-icon matSuffix>search</mat-icon>
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           @for (user of users$ | async; track user) {
           <mat-option [value]="user.displayName" (click)="createChat(user)">{{user.displayName}}</mat-option>
@@ -14,12 +18,63 @@
       </mat-form-field>
     </div>
 
+
+    <!-- green chats list  -->
+    <!-- <mat-selection-list class="custom-selection-list">
+
+      <mat-divider></mat-divider>
+      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
+
+
+<div class="flex items-center w-full">
+
+  <img matListAvatar [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt=":">
+
+
+  <div>
+
+  <div class="flex justify-between">
+
+    <div class="">  {{chat.chatName}}</div>
+    <div class="text-xs text-gray-400">
+      {{ chat.lastMessageDate }}
+    </div>
+     </div>
+ <div class="text-sm">   {{chat.lastMessage}}</div>
   </div>
 
 
-  <div class="messages rounded-md shadow-lg bg-orange-100 m-7">
-
-  </div>
 </div>
 
 
+
+      </mat-list-option>
+
+      <mat-divider></mat-divider>
+
+    </mat-selection-list> -->
+
+
+    <!-- fire -->
+         <!-- Chat List -->
+    <div class="flex-grow overflow-y-auto">
+      <div *ngFor="let chat of myChats$ | async" class="isolate  p-2 m-2  rounded-xl bg-white shadow-md ring-1 ring-slate-100">
+        <div class="flex items-center">
+          <img [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt="">
+          <div class="flex-grow">
+            <div class="flex justify-between">
+              <div class="font-medium">{{chat.chatName}}</div>
+              <div class="text-xs text-gray-400">{{chat.lastMessageDate}}</div>
+            </div>
+            <div class="text-sm text-gray-600">{{chat.lastMessage}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="messages rounded-md shadow-lg bg-slate-200 m-7">
+
+  </div>
+</div>
