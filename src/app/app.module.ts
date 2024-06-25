@@ -22,6 +22,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MainComponent } from './components/main/main.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
+
+
+
 
 const angularMaterial = [
   MatToolbarModule,
@@ -30,7 +35,7 @@ const angularMaterial = [
   MatFormFieldModule,
   MatMenuModule,
   MatInputModule,
-  ReactiveFormsModule,
+  ReactiveFormsModule,MatAutocompleteModule
 ];
 
 @NgModule({

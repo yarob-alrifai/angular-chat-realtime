@@ -1,0 +1,12 @@
+.chats-list {
+  width: 40%;
+}
+
+.screen {
+  height: calc(100vh - 70px);
+}
+
+
+.messages{
+  width: 60%;
+}

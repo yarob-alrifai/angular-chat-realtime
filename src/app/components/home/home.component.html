@@ -1,17 +1,25 @@
-<div class="container">
+<div class="px-36  flex  screen">
 
-  <ng-container *ngIf="user$ | async as user; else SignUp">
-    <div class="flex">
-      Welcome Back {{user.displayName}}!!!
+  <div class="chats-list rounded-md bg-slate-300 m-7  shadow-lg">
 
-
+    <div class="m-2">
+      <mat-form-field class="w-full ">
+        <input matInput placeholder="Search for Users . . ." type="text" [formControl]="searchControl"
+          [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          @for (user of users$ | async; track user) {
+          <mat-option [value]="user.displayName" (click)="createChat(user)">{{user.displayName}}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
     </div>
-  </ng-container>
-  <ng-template #SignUp>
 
-    <span class="center margin-top">You do't have an account? <a class="text-blue-500 font-bold underline"
-        routerLink="/sign-up">Sign Up!</a></span>
+  </div>
 
-  </ng-template>
 
+  <div class="messages rounded-md shadow-lg bg-orange-100 m-7">
+
+  </div>
 </div>
+
+
