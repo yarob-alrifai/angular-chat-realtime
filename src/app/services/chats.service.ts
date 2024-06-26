@@ -6,6 +6,7 @@ import {
   collection,
   collectionData,
   doc,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -13,7 +14,7 @@ import {
 import { ProfileUser } from '../models/user';
 import { Observable, concatMap, map, take } from 'rxjs';
 import { UserService } from './user.service';
-import { Chat } from '../models/chat';
+import { Chat, Message } from '../models/chat';
 
 @Injectable({
   providedIn: 'root',
@@ -89,5 +90,12 @@ export class ChatsService {
         updateDoc(chatRef, { lastMessage: message, lastMessageDate: today })
       )
     );
+  }
+
+  // green get all chats messages
+  getChatMessages$(chatId: string): Observable<Message[]> {
+    const ref = collection(this.fireStrore, 'chats', chatId, 'messages');
+    const queryAll = query(ref, orderBy('sendDate', 'asc'));
+    return collectionData(queryAll) as Observable<Message[]>;
   }
 }

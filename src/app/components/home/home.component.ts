@@ -1,5 +1,13 @@
-import { Component } from '@angular/core';
-import { Observable, combineLatest, startWith, map, find } from 'rxjs';
+import { Component, ElementRef, ViewChild, viewChild } from '@angular/core';
+import {
+  Observable,
+  combineLatest,
+  startWith,
+  map,
+  find,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { ProfileUser } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
@@ -12,6 +20,7 @@ import { ChatsService } from '../../services/chats.service';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
+  @ViewChild('endOfChat') endOfChat: ElementRef | undefined;
   searchControl = new FormControl('');
   chatListControl = new FormControl('');
   messageControl = new FormControl('');
@@ -53,6 +62,13 @@ export class HomeComponent {
       return chats.find((c) => c.id === selectedId) || null;
     })
   );
+
+  // green get all messges for the chat
+  messages$ = this.chatListControl.valueChanges.pipe(
+    map((value) => (value ? value[0] : null)),
+    switchMap((chatId) => this.chatsService.getChatMessages$(chatId as string)),
+    tap(() => this.scrollToBottom())
+  );
   // green create chat function
   createChat(otherUser: ProfileUser) {
     this.chatsService.createChat(otherUser).subscribe();
@@ -69,7 +85,19 @@ export class HomeComponent {
       const selectedChatId = this.chatListControl.value[0];
       this.chatsService
         .addChatMessage(selectedChatId, message)
-        .subscribe(() => this.messageControl.setValue(''));
+        .subscribe(() => {
+          this.messageControl.setValue('');
+          this.scrollToBottom();
+        });
     }
+  }
+
+  // green scroll to the button
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.endOfChat) {
+        this.endOfChat.nativeElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }
 }

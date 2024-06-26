@@ -25,7 +25,8 @@ import { MainComponent } from './components/main/main.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatListModule } from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
-
+import { DateDisplayPipe } from './pipes/date-display.pipe';
+import { DatePipe } from '@angular/common';
 
 const angularMaterial = [
   MatToolbarModule,MatDividerModule,
@@ -47,9 +48,11 @@ const angularMaterial = [
     ProfileComponent,
     HomeComponent,
     MainComponent,
+    DateDisplayPipe,
   ],
   imports: [BrowserModule, AppRoutingModule, angularMaterial],
   providers: [
+    DatePipe,
     provideClientHydration(),
     provideAnimationsAsync(),
     provideFirebaseApp(() =>

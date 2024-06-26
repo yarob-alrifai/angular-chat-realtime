@@ -1,37 +1,34 @@
-<div class="px-36  flex  screen">
+<div class="px-36 flex screen">
 
-  <div class="chats-list rounded-md bg-slate-50  m-7  shadow-lg">
+  <div class="chats-list rounded-md bg-slate-50 m-7 shadow-lg">
 
-
-    <!-- fire search field -->
+    <!-- Search field -->
     <div class="m-2 overflow-hidden">
       <mat-form-field>
-        <mat-label>Search for Users </mat-label>
+        <mat-label>Search for Users</mat-label>
         <input matInput placeholder="yarob" type="text" [formControl]="searchControl" [matAutocomplete]="auto">
         <mat-icon matSuffix>search</mat-icon>
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          @for (user of users$ | async; track user) {
-          <mat-option [value]="user.displayName" (click)="createChat(user)">{{user.displayName}}</mat-option>
-          }
+          <mat-option *ngFor="let user of users$ | async" [value]="user.displayName" (click)="createChat(user)">
+            {{ user.displayName }}
+          </mat-option>
         </mat-autocomplete>
       </mat-form-field>
     </div>
 
-
-    <!-- green chats list  -->
-    <!-- Chat List -->
+    <!-- Chat list -->
     <mat-selection-list class="custom-selection-list" [formControl]="chatListControl">
       <mat-divider></mat-divider>
-      <mat-list-option class="" *ngFor="let chat of myChats$ | async" [value]="chat.id">
+      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
         <div class="flex items-center w-full">
           <img matListAvatar [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt="">
           <div class="flex-grow">
             <div class="flex justify-between">
-              <div class="font-medium">{{chat.chatName}}</div>
-              <div class="text-xs text-gray-400 mt-1">{{chat.lastMessageDate}}</div>
+              <div class="font-medium">{{ chat.chatName }}</div>
+              <div class="text-xs text-gray-400 mt-1">{{ chat.lastMessageDate | dateDisplay }}</div>
             </div>
             <div class="flex items-end h-full">
-              <span class="text-sm text-gray-600">{{chat.lastMessage}}</span>
+              <span class="text-sm text-gray-600">{{ chat.lastMessage }}</span>
             </div>
           </div>
         </div>
@@ -40,37 +37,49 @@
     </mat-selection-list>
   </div>
 
-  <!-- green messages area -->
-  <div class="messages rounded-md shadow-lg bg-slate-200 m-7">
+  <!-- Messages area -->
+  <div class="messages rounded-md shadow-lg bg-slate-200 m-7 flex-1 flex flex-col">
 
     <div *ngIf="selectedChat$ | async as selectedChat; else noMessages">
       <div>
-        <div class="flex items-center m-2"> <img matListAvatar [src]="selectedChat.chatPic"
-            class="rounded-full w-10 h-10 mr-2" alt="">
-          <div class="font-medium">{{selectedChat.chatName}}</div>
+        <div class="flex items-center m-2">
+          <img matListAvatar [src]="selectedChat.chatPic" class="rounded-full w-10 h-10 mr-2" alt="">
+          <div class="font-medium">{{ selectedChat.chatName }}</div>
         </div>
         <mat-divider></mat-divider>
       </div>
-
-
-
-
     </div>
-    <!-- green no messages area -->
+
     <ng-template #noMessages>
       <div class="flex items-center m-2">
         <div class="font-medium">Messages</div>
       </div>
-
     </ng-template>
-    <!-- green chat area -->
-    <div class="bg-white chat-area rounded-md m-2">
+
+    <!-- Chat messages -->
+    <div class="flex-1 p-4 bg-gray-100 overflow-y-auto">
+      <div *ngFor="let message of messages$ | async" class="mb-2">
+
+        <ng-container *ngIf="user$ | async as currentUser">
+          <div class="p-2 rounded-md bg-lime-100/30 shadow-md inline-block  m-4  "
+               [ngClass]="{'bg-green-300 flex self-end': message.senderId === currentUser.uid  }">
+            <div class="break-words whitespace-normal">{{ message.text }}</div>
+            <div class="self-end text-right text-xs text-gray-500 ">
+              {{ message.sendDate | dateDisplay }}
+            </div>
+          </div>
+        </ng-container>
+
+
+
+      </div>        <div #endOfChat></div>
 
     </div>
-    <!-- green input area -->
+
+    <!-- Message input area -->
     <div class="p-2">
       <mat-form-field appearance="outline" class="w-full">
-        <input matInput [formControl]="messageControl" (keydown.enter)="sendMessage()" placeholder="Enter Your Message  . . . ">
+        <input matInput [formControl]="messageControl" (keydown.enter)="sendMessage()" placeholder="Enter Your Message...">
         <button mat-icon-button matSuffix (click)="sendMessage()"><mat-icon class="mat-18">send</mat-icon></button>
       </mat-form-field>
     </div>
