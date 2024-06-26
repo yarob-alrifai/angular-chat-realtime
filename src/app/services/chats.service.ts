@@ -98,4 +98,16 @@ export class ChatsService {
     const queryAll = query(ref, orderBy('sendDate', 'asc'));
     return collectionData(queryAll) as Observable<Message[]>;
   }
+
+  // green check if the chat is old
+  isExistingChat(otherUserId: string): Observable<string | null> {
+    return this.myChats$.pipe(
+      take(1),
+      map((chats) => {
+        const chat = chats.find((chat) => chat.userIds.includes(otherUserId));
+        return chat ? chat.id : null;
+      })
+    );
+  }
+
 }

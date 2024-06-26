@@ -7,6 +7,7 @@ import {
   find,
   switchMap,
   tap,
+  of,
 } from 'rxjs';
 import { ProfileUser } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
@@ -20,35 +21,30 @@ import { ChatsService } from '../../services/chats.service';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  @ViewChild('endOfChat') endOfChat: ElementRef | undefined;
-  searchControl = new FormControl('');
-  chatListControl = new FormControl('');
-  messageControl = new FormControl('');
   constructor(
     public authService: AuthService,
     private userService: UserService,
     private chatsService: ChatsService
   ) {}
 
-  // fire observe
+  // sun **************************************  start normal decleration   **************************************
+  // cloud  view child
+
+  @ViewChild('endOfChat') endOfChat: ElementRef | undefined;
+
+  // cloud form control
+  searchControl = new FormControl('');
+  chatListControl = new FormControl(['']);
+  messageControl = new FormControl('');
+
+  // sun  ************************************** end normal  decleration **************************************
+  // red ************************************** start  decleration for the observable **************************************
   myChats$ = this.chatsService.myChats$;
-  // green get user data from the user services
   user$: Observable<ProfileUser | null> = this.userService.currentUserProfile$;
-  users$ = combineLatest([
-    this.userService.allUsers,
-    this.user$,
-    this.searchControl.valueChanges.pipe(startWith('')),
-  ]).pipe(
-    map(([users, user, searchString]) =>
-      users.filter(
-        (u) =>
-          u.uid !== user?.uid &&
-          u.displayName
-            ?.toLowerCase()
-            .includes((searchString ?? '').toLowerCase())
-      )
-    )
-  );
+
+  // red ************************************** end  decleration for the observable **************************************
+
+  // orange  ************************************** start complex  decleration **************************************
 
   selectedChat$ = combineLatest([
     this.chatListControl.valueChanges.pipe(startWith([])),
@@ -63,18 +59,17 @@ export class HomeComponent {
     })
   );
 
-  // green get all messges for the chat
   messages$ = this.chatListControl.valueChanges.pipe(
     map((value) => (value ? value[0] : null)),
     switchMap((chatId) => this.chatsService.getChatMessages$(chatId as string)),
     tap(() => this.scrollToBottom())
   );
-  // green create chat function
-  createChat(otherUser: ProfileUser) {
-    this.chatsService.createChat(otherUser).subscribe();
-  }
 
-  // green send message function
+  // orange  ************************************** end complex  decleration **************************************
+
+  // green   ************************************** start  functions  **************************************
+
+  // cloud send message
   sendMessage() {
     if (
       this.messageControl.valid &&
@@ -92,7 +87,7 @@ export class HomeComponent {
     }
   }
 
-  // green scroll to the button
+  // cloud scroll to the bottom
   scrollToBottom() {
     setTimeout(() => {
       if (this.endOfChat) {
@@ -100,4 +95,23 @@ export class HomeComponent {
       }
     }, 100);
   }
+
+  // cloud create chat
+  createChat(otherUser: ProfileUser) {
+    this.chatsService
+      .isExistingChat(otherUser.uid)
+      .pipe(
+        switchMap((chatId) => {
+          if (chatId) return of(chatId);
+          else return this.chatsService.createChat(otherUser);
+        })
+      )
+      .subscribe((chatId) => {
+        this.chatListControl.setValue([chatId]);
+      });
+
+    this.chatsService.createChat(otherUser).subscribe();
+  }
+
+  // green   ************************************** end  functions  **************************************
 }
