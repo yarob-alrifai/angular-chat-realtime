@@ -17,3 +17,6 @@
 }
 
 
+.chat-area{
+  height: calc(100vh - 270px);
+}

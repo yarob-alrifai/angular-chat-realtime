@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
   Firestore,
+  Timestamp,
   addDoc,
   collection,
   collectionData,
+  doc,
   query,
+  updateDoc,
   where,
 } from '@angular/fire/firestore';
 import { ProfileUser } from '../models/user';
@@ -70,5 +73,21 @@ export class ChatsService {
       chat.chatPic = photoURL;
     });
     return chats;
+  }
+
+  // green add chat message
+  addChatMessage(chatId: string, message: string): Observable<any> {
+    const ref = collection(this.fireStrore, 'chats', chatId, 'messages');
+    const chatRef = doc(this.fireStrore, 'chats', chatId);
+    const today = Timestamp.fromDate(new Date());
+    return this.userService.currentUserProfile$.pipe(
+      take(1),
+      concatMap((user) =>
+        addDoc(ref, { text: message, senderId: user?.uid, sendDate: today })
+      ),
+      concatMap(() =>
+        updateDoc(chatRef, { lastMessage: message, lastMessageDate: today })
+      )
+    );
   }
 }

@@ -4,12 +4,11 @@
 
 
     <!-- fire search field -->
-    <div class="m-2">
-      <mat-form-field  >
+    <div class="m-2 overflow-hidden">
+      <mat-form-field>
         <mat-label>Search for Users </mat-label>
-        <input matInput placeholder="yarob" type="text" [formControl]="searchControl"
-          [matAutocomplete]="auto">
-          <mat-icon matSuffix>search</mat-icon>
+        <input matInput placeholder="yarob" type="text" [formControl]="searchControl" [matAutocomplete]="auto">
+        <mat-icon matSuffix>search</mat-icon>
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           @for (user of users$ | async; track user) {
           <mat-option [value]="user.displayName" (click)="createChat(user)">{{user.displayName}}</mat-option>
@@ -20,61 +19,60 @@
 
 
     <!-- green chats list  -->
-    <!-- <mat-selection-list class="custom-selection-list">
-
+    <!-- Chat List -->
+    <mat-selection-list class="custom-selection-list" [formControl]="chatListControl">
       <mat-divider></mat-divider>
-      <mat-list-option *ngFor="let chat of myChats$ | async" [value]="chat.id">
-
-
-<div class="flex items-center w-full">
-
-  <img matListAvatar [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt=":">
-
-
-  <div>
-
-  <div class="flex justify-between">
-
-    <div class="">  {{chat.chatName}}</div>
-    <div class="text-xs text-gray-400">
-      {{ chat.lastMessageDate }}
-    </div>
-     </div>
- <div class="text-sm">   {{chat.lastMessage}}</div>
-  </div>
-
-
-</div>
-
-
-
-      </mat-list-option>
-
-      <mat-divider></mat-divider>
-
-    </mat-selection-list> -->
-
-
-    <!-- fire -->
-         <!-- Chat List -->
-    <div class="flex-grow overflow-y-auto">
-      <div *ngFor="let chat of myChats$ | async" class="isolate  p-2 m-2  rounded-xl bg-white shadow-md ring-1 ring-slate-100">
-        <div class="flex items-center">
-          <img [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt="">
+      <mat-list-option class="" *ngFor="let chat of myChats$ | async" [value]="chat.id">
+        <div class="flex items-center w-full">
+          <img matListAvatar [src]="chat.chatPic" class="rounded-full w-10 h-10 mr-2" alt="">
           <div class="flex-grow">
             <div class="flex justify-between">
               <div class="font-medium">{{chat.chatName}}</div>
-              <div class="text-xs text-gray-400">{{chat.lastMessageDate}}</div>
+              <div class="text-xs text-gray-400 mt-1">{{chat.lastMessageDate}}</div>
             </div>
-            <div class="text-sm text-gray-600">{{chat.lastMessage}}</div>
+            <div class="flex items-end h-full">
+              <span class="text-sm text-gray-600">{{chat.lastMessage}}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </mat-selection-list>
   </div>
 
-
+  <!-- green messages area -->
   <div class="messages rounded-md shadow-lg bg-slate-200 m-7">
 
+    <div *ngIf="selectedChat$ | async as selectedChat; else noMessages">
+      <div>
+        <div class="flex items-center m-2"> <img matListAvatar [src]="selectedChat.chatPic"
+            class="rounded-full w-10 h-10 mr-2" alt="">
+          <div class="font-medium">{{selectedChat.chatName}}</div>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+
+
+
+
+    </div>
+    <!-- green no messages area -->
+    <ng-template #noMessages>
+      <div class="flex items-center m-2">
+        <div class="font-medium">Messages</div>
+      </div>
+
+    </ng-template>
+    <!-- green chat area -->
+    <div class="bg-white chat-area rounded-md m-2">
+
+    </div>
+    <!-- green input area -->
+    <div class="p-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput [formControl]="messageControl" (keydown.enter)="sendMessage()" placeholder="Enter Your Message  . . . ">
+        <button mat-icon-button matSuffix (click)="sendMessage()"><mat-icon class="mat-18">send</mat-icon></button>
+      </mat-form-field>
+    </div>
   </div>
 </div>
