@@ -38,14 +38,24 @@ export class HomeComponent {
   messageControl = new FormControl('');
 
   // sun  ************************************** end normal  decleration **************************************
+
+
+
+
   // red ************************************** start  decleration for the observable **************************************
   myChats$ = this.chatsService.myChats$;
   user$: Observable<ProfileUser | null> = this.userService.currentUserProfile$;
 
   // red ************************************** end  decleration for the observable **************************************
 
+
+
+
+
+
   // orange  ************************************** start complex  decleration **************************************
 
+  // cloud
   selectedChat$ = combineLatest([
     this.chatListControl.valueChanges.pipe(startWith([])),
     this.myChats$,
@@ -65,7 +75,26 @@ export class HomeComponent {
     tap(() => this.scrollToBottom())
   );
 
+  users$ = combineLatest([
+    this.userService.allUsers,
+    this.user$,
+    this.searchControl.valueChanges.pipe(startWith('')),
+  ]).pipe(
+    map(([users, user, searchString]) =>
+      users.filter(
+        (u) =>
+          u.uid !== user?.uid &&
+          u.displayName
+            ?.toLowerCase()
+            .includes((searchString ?? '').toLowerCase())
+      )
+    )
+  );
   // orange  ************************************** end complex  decleration **************************************
+
+
+
+
 
   // green   ************************************** start  functions  **************************************
 
