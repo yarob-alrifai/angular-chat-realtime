@@ -1,0 +1,16 @@
+<div class="container py-4">
+  <ng-container *ngIf="user$ | async as user; else SignUp">
+    <div class="flex">
+      Welcome Back {{user.displayName}}!!!
+
+
+    </div>
+  </ng-container>
+  <ng-template #SignUp>
+
+    <span class="center margin-top">You do not have an account? <a class="text-blue-500 font-bold underline"
+        routerLink="/sign-up">Sign Up!</a></span>
+
+  </ng-template>
+
+</div>

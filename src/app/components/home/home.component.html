@@ -1,0 +1,88 @@
+<div class="px-36 flex screen">
+  <div class="chats-list rounded-md bg-slate-50 m-7  shadow-lg">
+
+    <!--fire----------------------------------------------------------- Search field ------------------------------------------------------------->
+    <div class=" m-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Search for Users</mat-label>
+        <input matInput placeholder="type here ..." type="text" [formControl]="searchControl" [matAutocomplete]="auto">
+        <mat-icon matSuffix>search</mat-icon>
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let user of users$ | async" [value]="user.displayName" (click)="createChat(user)">
+            {{ user.displayName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!--fire----------------------------------------------------------- Chat list ------------------------------------------------------------->
+    <div>
+      <div class="space-y-2 px-2">
+        <div *ngFor="let chat of myChats$ | async" (click)="selectChat(chat)" class="chat-card">
+          <div class="flex items-center w-full p-4 bg-white hover:bg-slate-200 rounded-lg shadow-md">
+            <div class="avatar bg-no-repeat bg-center bg-cover rounded-full w-12 h-12 mr-4 border-2 border-gray-300"
+              [ngStyle]="{'background-image': 'url(' + (chat.chatPic ?? 'https://i.pinimg.com/236x/97/7e/56/977e568da382e808209b9294e0c0c10a.jpg') + ')'}">
+            </div>
+            <div class="flex-grow">
+              <div class="flex justify-between">
+                <div class="font-medium text-xl">{{ chat.chatName }}</div>
+                <div class="text-xs text-gray-400">{{ chat.lastMessageDate | dateDisplay }}</div>
+              </div>
+              <div class="text-sm text-gray-600 mt-1">{{ chat.lastMessage }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--fire----------------------------------------------------------- Messages area ----------------------------------------------------------->
+  <div class="messages rounded-md shadow-lg bg-slate-200 m-7 flex-1 flex flex-col">
+    <div *ngIf="selectedChat  as selectedChat; else noMessages">
+      <div>
+        <div class="flex items-center m-2">
+          <div class="avatar bg-no-repeat bg-center bg-cover rounded-full w-10 h-10 mr-2 border"
+            [ngStyle]="{'background-image': 'url(' + (selectedChat.chatPic ?? 'https://i.pinimg.com/236x/97/7e/56/977e568da382e808209b9294e0c0c10a.jpg') + ')'}">
+          </div>
+          <div class="font-medium text-xl">{{ selectedChat.chatName }}</div>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+    </div>
+    <ng-template #noMessages>
+      <div class="flex items-center m-2">
+        <div class="font-medium text-xl">Messages</div>
+      </div>
+    </ng-template>
+
+    <!--fire----------------------------------------------------------- Chat messages ------------------------------------------------------------->
+    <div class="flex-1 p-4 bg-gray-100 overflow-y-auto">
+      <div *ngFor="let message of messages$ | async" class="mb-2">
+        <ng-container *ngIf="user$ | async as currentUser">
+          <div class="m-4 flex"
+            [ngClass]="{'justify-end': message.senderId == currentUser.uid, 'justify-start': message.senderId != currentUser.uid}">
+            <div class="p-2 rounded-md bg-lime-500/30 shadow-md inline-block"
+              [ngClass]="{'bg-blue-300': message.senderId == currentUser.uid }">
+              <div class="break-words whitespace-normal">{{ message.text }}</div>
+              <div class="self-end text-right text-xs text-gray-500">
+                {{ message.sendDate | dateDisplay }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div #endOfChat></div>
+    </div>
+
+
+
+    <!--fire----------------------------------------------------------- Message input area ------------------------------------------------------------->
+    <div class="p-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput [formControl]="messageControl" (keydown.enter)="sendMessage()"
+          placeholder="Enter Your Message...">
+        <button mat-icon-button matSuffix (click)="sendMessage()"><mat-icon class="mat-18">send</mat-icon></button>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+.chats-list {
+  width: 30%;
+}
+
+.screen {
+  height: calc(100vh - 70px);
+}
+
+
+.messages{
+  width: 60%;
+}
+
+
+::ng-deep .custom-selection-list .mat-mdc-list-option .mdc-checkbox {
+  display: none;
+}
+
+
+.chat-area{
+  height: calc(100vh - 270px);
+  display: flex;
+  flex-direction: column;
+}
+.chat-area > :first-child{margin-top: auto;}
+/* red this for delete the  in line in the form field */
+::ng-deep .mdc-notched-outline__notch {
+  border-right: none !important;
+}
